@@ -60,10 +60,10 @@ export async function POST(req: Request) {
     )
   }
 
+  /* Construção impessoal de propósito: a lista mistura gêneros
+     (o liquidificador, a cuscuzeira) e concordar item a item daria errado. */
   const aviso = r.perdidos.length
-    ? r.ganhos.length
-      ? `${lista(r.perdidos)} ${r.perdidos.length === 1 ? 'acabou' : 'acabaram'} de ser reservado${r.perdidos.length === 1 ? '' : 's'} por outra pessoa. O resto está garantido.`
-      : `${lista(r.perdidos)} ${r.perdidos.length === 1 ? 'acabou' : 'acabaram'} de ser reservado${r.perdidos.length === 1 ? '' : 's'} por outra pessoa.`
+    ? `Alguém já tinha escolhido: ${lista(r.perdidos)}.${r.ganhos.length ? ' O resto está garantido.' : ''}`
     : null
 
   return NextResponse.json(

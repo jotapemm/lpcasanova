@@ -1,17 +1,24 @@
 import { COUPLE_LINE, EVENT, whatsappLink } from '@/lib/event'
-import { Ramo } from './Ornamentos'
+import { Bagas, Ramo, Samambaia } from './Ornamentos'
 
 export default function Rodape() {
   return (
     <footer className="rodape">
-      <Ramo className="rodape__ramo" />
+      <div className="folhagem folhagem--rodape" aria-hidden="true">
+        <Ramo className="planta planta--r1" />
+        <Samambaia className="planta planta--r2" />
+        <Bagas className="planta planta--r3" />
+        <Samambaia className="planta planta--r4" />
+        <Ramo className="planta planta--r5" />
+      </div>
+
       <div className="rodape__corpo">
         <p className="rodape__frase">
           Toda casa começa vazia.
           <br />A nossa começa cheia de gente.
         </p>
 
-        <a className="botao botao--claro" href={whatsappLink()} target="_blank" rel="noreferrer">
+        <a className="botao botao--wa" href={whatsappLink()} target="_blank" rel="noreferrer">
           Confirmar presença no WhatsApp
         </a>
         <p className="rodape__fone">{EVENT.whatsapp.label}</p>

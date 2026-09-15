@@ -1,13 +1,25 @@
 import { EVENT, mapaLink } from '@/lib/event'
-import { Ramo } from './Ornamentos'
+import { Bagas, Ramo, Samambaia } from './Ornamentos'
 
 export default function Convite() {
   const { couple, date, place } = EVENT
 
   return (
     <header className="convite">
-      <Ramo className="convite__ramo convite__ramo--esq" />
-      <Ramo className="convite__ramo convite__ramo--dir" />
+      {/* moldura de folhagem: densa em cima e embaixo, como no convite impresso */}
+      <div className="folhagem folhagem--topo" aria-hidden="true">
+        <Ramo className="planta planta--a" />
+        <Samambaia className="planta planta--b" />
+        <Bagas className="planta planta--c" />
+        <Ramo className="planta planta--d" />
+        <Samambaia className="planta planta--e" />
+      </div>
+
+      <div className="folhagem folhagem--base" aria-hidden="true">
+        <Samambaia className="planta planta--f" />
+        <Bagas className="planta planta--g" />
+        <Ramo className="planta planta--h" />
+      </div>
 
       <div className="convite__corpo">
         <p className="sobrescrito reveal d1">Convite</p>
@@ -30,7 +42,7 @@ export default function Convite() {
         </div>
 
         <div className="local reveal d5">
-          <p className="sobrescrito sobrescrito--claro">Onde</p>
+          <p className="manuscrito manuscrito--pequeno">Local</p>
           <p className="local__linha">{place.line1}</p>
           <p className="local__linha local__linha--fraca">{place.line2}</p>
           <a className="elo" href={mapaLink} target="_blank" rel="noreferrer">

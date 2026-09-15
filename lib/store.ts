@@ -139,6 +139,13 @@ export async function reservar(
   const desejados = itens.filter((id) => !atual.has(id))
   const restantes = Math.max(0, EVENT.maxPicks - meus.length)
 
+  /* Pedidos que ja estavam com outra pessoa quando lemos a lista. Sem isto
+     eles sumiriam calados: o `HSETNX` nem chega a ser tentado para eles. */
+  const tomadosAntes = itens.filter((id) => {
+    const dono = atual.get(id)
+    return dono !== undefined && dono.g !== guestId
+  })
+
   if (!desejados.length) {
     return { ok: false, erro: 'vazio', reservas: publicar(atual, guestId), restantes }
   }
@@ -164,7 +171,12 @@ export async function reservar(
     ;(venceu ? ganhos : perdidos).push(id)
   }
 
-  return { ok: true, reservas: await listar(guestId), ganhos, perdidos }
+  return {
+    ok: true,
+    reservas: await listar(guestId),
+    ganhos,
+    perdidos: [...perdidos, ...tomadosAntes],
+  }
 }
 
 /** So o dono consegue devolver um presente para a lista. */

@@ -1,10 +1,11 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { EVENT } from '@/lib/event'
 import { CATEGORIES, GIFT_NAME, TOTAL_GIFTS } from '@/lib/gifts'
 import type { Modo, Reservas } from '@/lib/tipos'
 import CartaoResposta from './CartaoResposta'
+import { Bagas, Samambaia } from './Ornamentos'
 import ModalNome from './ModalNome'
 
 type Props = { reservasIniciais: Reservas; modoInicial: Modo }
@@ -64,7 +65,14 @@ export default function Presentes({ reservasIniciais, modoInicial }: Props) {
     setSobrenome(busca(CHAVE_SOBRENOME))
   }, [])
 
+  /* `focus` e `visibilitychange` disparam juntos ao voltar para a aba;
+     sem esta trava a lista seria buscada duas vezes a cada troca. */
+  const ultimaBusca = useRef(0)
+
   const atualizar = useCallback(async (id: string) => {
+    const agora = Date.now()
+    if (agora - ultimaBusca.current < 2000) return
+    ultimaBusca.current = agora
     try {
       const res = await fetch(`/api/itens?g=${encodeURIComponent(id)}`, { cache: 'no-store' })
       if (!res.ok) return
@@ -191,6 +199,10 @@ export default function Presentes({ reservasIniciais, modoInicial }: Props) {
           (veja o README) antes de mandar o link para os convidados.
         </p>
       )}
+
+      <Samambaia className="planta planta--lista-esq" />
+      <Samambaia className="planta planta--lista-dir" />
+      <Bagas className="planta planta--lista-baga" />
 
       <div className="presentes__corpo">
         <div className="presentes__cabecalho">
