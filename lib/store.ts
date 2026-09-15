@@ -19,14 +19,49 @@ let cliente: Redis | null | undefined
 /** Fallback para `npm run dev` sem banco. Some a cada reinicio. */
 const memoria = new Map<string, Reserva>()
 
+/** Terminacoes que a Vercel e a Upstash usam para a URL REST. */
+const SUFIXOS = ['KV_REST_API_URL', 'UPSTASH_REDIS_REST_URL', 'REDIS_REST_URL']
+
+/**
+ * Acha a dupla url/token sem depender do nome exato da variavel: quando a
+ * store tem nome proprio, a Vercel injeta tudo com prefixo (por exemplo
+ * `LPCASANOVA_KV_REST_API_URL`). Procuramos primeiro os nomes secos e depois
+ * qualquer variante que termine num dos sufixos conhecidos.
+ */
+function credenciais(): { url: string; token: string; via: string } | null {
+  const env = process.env
+  const candidatas = [
+    ...SUFIXOS.filter((s) => env[s]),
+    ...Object.keys(env).filter(
+      (k) => !SUFIXOS.includes(k) && SUFIXOS.some((s) => k.endsWith(s)),
+    ),
+  ]
+
+  for (const chave of candidatas) {
+    const url = env[chave]
+    if (!url || !/^https?:\/\//.test(url)) continue
+    const token = env[chave.replace(/_URL$/, '_TOKEN')]
+    if (token) return { url, token, via: chave }
+  }
+  return null
+}
+
 function redis(): Redis | null {
   if (cliente !== undefined) return cliente
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN
-  cliente = url && token ? new Redis({ url, token }) : null
-  if (!cliente) {
+
+  const cred = credenciais()
+  cliente = cred ? new Redis({ url: cred.url, token: cred.token }) : null
+
+  if (cred) {
+    console.log(`[cha] Redis conectado via ${cred.via}`)
+  } else {
+    /* So os NOMES das variaveis, nunca os valores — isto vai para o log. */
+    const parecidas = Object.keys(process.env).filter((k) =>
+      /REDIS|UPSTASH|^KV_/.test(k),
+    )
     console.warn(
-      '[cha] Nenhum Redis configurado — rodando em memoria. As reservas NAO sao salvas.',
+      '[cha] Nenhum Redis configurado — rodando em memoria, as reservas NAO sao salvas. ' +
+        `Variaveis parecidas encontradas: ${parecidas.join(', ') || '(nenhuma)'}`,
     )
   }
   return cliente
