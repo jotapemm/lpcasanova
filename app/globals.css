@@ -104,6 +104,13 @@ svg {
   border-radius: 2px;
 }
 
+/* ============================= SELETOR ============================ */
+
+::selection {
+  background-color: var(--olive);
+  color: var(--blush-claro);
+}
+
 .sr {
   position: absolute;
   width: 1px;
