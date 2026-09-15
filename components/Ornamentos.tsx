@@ -167,34 +167,36 @@ export function Bagas({ className }: { className?: string }) {
   )
 }
 
-/* -------------------------- filete --------------------------- */
+/* -------------------------- divisor --------------------------- */
 
-const FILETE_ESQ: Folha[] = [
-  [133, 34, 0.95, -18],
-  [118, 28, 0.8, -27],
-  [106, 18, 0.64, -38],
+/* Folhas espacadas de proposito: no desenho antigo os raios se somavam
+   e o conjunto virava uma mancha em vez de um raminho. */
+const DIVISOR_ESQ: Folha[] = [
+  [152, 38, 0.9, -14],
+  [128, 31, 0.76, -25],
+  [106, 19, 0.6, -38],
 ]
-const FILETE_DIR: Folha[] = [
-  [167, 34, 0.95, 18],
-  [182, 28, 0.8, 27],
-  [194, 18, 0.64, 38],
+const DIVISOR_DIR: Folha[] = [
+  [188, 38, 0.9, 14],
+  [212, 31, 0.76, 25],
+  [234, 19, 0.6, 38],
 ]
 
-/** Filete que separa as seções, com uma baga vermelha no centro. */
-export function Filete({ className }: { className?: string }) {
+/** Guirlanda que marca a passagem de uma parte do convite para a outra. */
+export function Divisor({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 300 46" className={className} aria-hidden="true" focusable="false">
+    <svg viewBox="0 0 340 56" className={className} aria-hidden="true" focusable="false">
       <g stroke="currentColor" fill="none" strokeWidth="1" strokeLinecap="round" opacity="0.5">
-        <path d="M0 36 H 88" />
-        <path d="M212 36 H 300" />
+        <path d="M0 41 H 88" />
+        <path d="M252 41 H 340" />
       </g>
       <g stroke="currentColor" fill="none" strokeWidth="1.2" strokeLinecap="round" opacity="0.7">
-        <path d="M150 37 C 136 37, 120 31, 104 16" />
-        <path d="M150 37 C 164 37, 180 31, 196 16" />
+        <path d="M170 41 C 154 41, 132 36, 108 20" />
+        <path d="M170 41 C 186 41, 208 36, 232 20" />
       </g>
-      <Folhas dados={FILETE_ESQ} />
-      <Folhas dados={FILETE_DIR} />
-      <circle cx="150" cy="36" r="3.2" fill={ACENTO} opacity="0.8" />
+      <Folhas dados={DIVISOR_ESQ} raio={14} />
+      <Folhas dados={DIVISOR_DIR} raio={14} />
+      <circle cx="170" cy="40" r="3.6" fill={ACENTO} opacity="0.85" />
     </svg>
   )
 }

@@ -1,4 +1,4 @@
-import { Bagas, Filete, Ramo } from './Ornamentos'
+import { Bagas, Ramo } from './Ornamentos'
 
 export default function Versiculo() {
   return (
@@ -11,8 +11,6 @@ export default function Versiculo() {
         <p className="versiculo__convite">
           Uma nova fase se inicia em nossas vidas, e convidamos você para comemorar conosco!
         </p>
-
-        <Filete className="versiculo__filete" />
 
         <p className="versiculo__ref" id="versiculo-titulo">
           1 Coríntios 13:4-7

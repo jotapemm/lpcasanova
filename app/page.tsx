@@ -1,4 +1,5 @@
 import Convite from '@/components/Convite'
+import { Divisor } from '@/components/Ornamentos'
 import Presentes from '@/components/Presentes'
 import Rodape from '@/components/Rodape'
 import Versiculo from '@/components/Versiculo'
@@ -14,8 +15,10 @@ export default async function Pagina() {
   return (
     <>
       <Convite />
+      <Divisor className="divisor" />
       <Versiculo />
       <Presentes reservasIniciais={reservas} modoInicial={modo()} />
+      <Divisor className="divisor" />
       <Rodape />
     </>
   )

@@ -200,10 +200,10 @@ svg {
 
 /* convite — base */
 .planta--f {
-  bottom: -14%;
+  bottom: -12%;
   left: -4%;
   width: clamp(88px, 14vw, 165px);
-  rotate: -16deg;
+  rotate: 196deg;
   color: var(--olive-claro);
 }
 .planta--g {
@@ -212,10 +212,10 @@ svg {
   width: clamp(40px, 5.5vw, 68px);
 }
 .planta--h {
-  bottom: -16%;
+  bottom: -13%;
   right: -5%;
   width: clamp(112px, 18vw, 210px);
-  rotate: 18deg;
+  rotate: 164deg;
 }
 
 /* versículo */
@@ -274,10 +274,10 @@ svg {
   rotate: 158deg;
 }
 .planta--r2 {
-  bottom: -10%;
+  bottom: -8%;
   left: 8%;
   width: clamp(72px, 11vw, 135px);
-  rotate: -12deg;
+  rotate: 192deg;
   color: var(--olive-claro);
 }
 .planta--r3 {
@@ -293,10 +293,33 @@ svg {
   color: var(--olive-claro);
 }
 .planta--r5 {
-  bottom: -12%;
+  bottom: -9%;
   right: -4%;
   width: clamp(92px, 15vw, 175px);
-  rotate: 16deg;
+  rotate: 166deg;
+}
+
+/* --------------------------- divisor ------------------------------ */
+
+.divisor {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: clamp(230px, 42%, 390px);
+  margin-inline: auto;
+  margin-block: clamp(0.4rem, 2vw, 1.3rem);
+  color: var(--olive);
+  opacity: 0.8;
+  /* As pontas desbotam. Um traco que termina seco repetiria justamente
+     o problema que este divisor veio resolver. */
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 16%,
+    #000 84%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
 }
 
 /* --------------------------- utilitarios -------------------------- */
@@ -586,14 +609,8 @@ svg {
   text-wrap: balance;
 }
 
-.versiculo__filete {
-  width: clamp(230px, 58%, 330px);
-  margin-block: 0.6rem 0.9rem;
-  color: var(--olive);
-  opacity: 0.9;
-}
-
 .versiculo__ref {
+  margin-top: clamp(1.1rem, 4vw, 2rem);
   font-family: var(--f-sans);
   font-size: 0.68rem;
   letter-spacing: 0.2em;
