@@ -638,6 +638,19 @@ svg {
 }
 
 /* ============================ PÉTALAS ============================== */
+
+.petala--blush {
+  color: var(--blush);
+}
+
+.petala--vinho {
+  color: var(--wine);
+}
+
+.petala--folha {
+  color: var(--sage);
+}
+
 .petalas {
   position: absolute;
   inset: 0;
@@ -648,12 +661,14 @@ svg {
 
 .petala {
   position: absolute;
-  top: 30%;
+  top: var(--y);
   left: 0;
-  width: 16px;
+  width: var(--tam);
+  opacity: 0.85;
   color: var(--blush);
-  animation: vento 20s linear infinite;
+  animation: vento var(--dur) linear var(--atraso) infinite;
 }
+
 
 @keyframes vento {
   from {
@@ -668,13 +683,14 @@ svg {
 .petala__forma {
   width: 100%;
   height: auto;
-  animation: giro 3s ease-in-out infinite alternate;
+  animation: giro var(--giro) ease-in-out infinite alternate;
 }
 
 @keyframes giro {
   from {
     transform: translateY(-12px) rotateX(0deg) rotateY(0deg) rotate(0deg);
   }
+
   to {
     transform: translateY(12px) rotateX(70deg) rotateY(180deg) rotate(45deg);
   }
@@ -1501,6 +1517,10 @@ svg {
     right: 0.25rem;
   }
 
+  .petala:nth-child(even) {
+    display: none;
+  }
+
   /* No celular a folhagem recua para nao brigar com o texto. */
   .planta {
     opacity: 0.45;
@@ -1529,6 +1549,10 @@ svg {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .petalas {
+    display: none;
   }
 
   *,

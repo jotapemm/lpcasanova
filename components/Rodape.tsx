@@ -1,6 +1,7 @@
 import { COUPLE_LINE, EVENT, whatsappLink } from '@/lib/event'
 import Botao from './Botao'
 import { Bagas, Ramo, Samambaia } from './Ornamentos'
+import Petalas from './Petalas'
 
 export default function Rodape() {
   return (
@@ -12,6 +13,8 @@ export default function Rodape() {
         <Samambaia className="planta planta--r4" />
         <Ramo className="planta planta--r5" />
       </div>
+
+      <Petalas />
 
       <div className="rodape__corpo">
         <p className="rodape__frase">
