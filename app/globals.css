@@ -64,6 +64,7 @@ html {
 }
 
 body {
+  position: relative;
   margin: 0;
   background-image: linear-gradient(180deg,
       var(--papel-topo) 0%,
@@ -127,10 +128,11 @@ svg {
 
 /* ----------------------------- textura ---------------------------- */
 
-.convite::after,
-.versiculo::after,
-.presentes::after,
-.rodape::after {
+/* Um grao so, na folha inteira. Antes ele morava em cada secao, e o vao
+   entre elas — justo onde fica o divisor — ficava sem textura: uma faixa
+   uns 3% mais clara que dava pra perceber. Mesmo z-index de antes: pinta
+   por cima das plantas e petalas, por baixo dos textos (z-index 1). */
+body::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -329,19 +331,11 @@ svg {
   position: relative;
   z-index: 1;
   display: block;
-  width: clamp(230px, 42%, 390px);
+  width: clamp(220px, 36%, 390px);
   margin-inline: auto;
   margin-block: clamp(0.4rem, 2vw, 1.3rem);
   color: var(--olive);
-  opacity: 0.8;
-  /* As pontas desbotam. Um traco que termina seco repetiria justamente
-     o problema que este divisor veio resolver. */
-  -webkit-mask-image: linear-gradient(90deg,
-      transparent 0%,
-      #000 16%,
-      #000 84%,
-      transparent 100%);
-  mask-image: linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+  opacity: 0.9;
 }
 
 /* --------------------------- utilitarios -------------------------- */
@@ -1566,4 +1560,12 @@ svg {
   .reveal {
     opacity: 1;
   }
+}
+
+/* ================= TESTE TEMPORARIO: SEM FOLHAGEM ================= *
+ * Esconde ramos, samambaias e bagas das quatro secoes.               *
+ * O JSX continua intacto: apague este bloco e as plantas voltam.     *
+ * ================================================================== */
+.planta {
+  display: none;
 }
