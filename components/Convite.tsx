@@ -1,5 +1,6 @@
 import { EVENT, mapaLink } from '@/lib/event'
 import { Bagas, Ramo, Samambaia } from './Ornamentos'
+import Petalas from './Petalas'
 
 export default function Convite() {
   const { couple, date, place } = EVENT
@@ -20,6 +21,8 @@ export default function Convite() {
         <Bagas className="planta planta--g" />
         <Ramo className="planta planta--h" />
       </div>
+
+      <Petalas />
 
       <div className="convite__corpo">
         <p className="sobrescrito reveal d1">Convite</p>
