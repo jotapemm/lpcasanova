@@ -1,4 +1,5 @@
 import { COUPLE_LINE, EVENT, whatsappLink } from '@/lib/event'
+import Botao from './Botao'
 import { Bagas, Ramo, Samambaia } from './Ornamentos'
 
 export default function Rodape() {
@@ -18,9 +19,9 @@ export default function Rodape() {
           <br />A nossa começa cheia de gente.
         </p>
 
-        <a className="botao botao--wa" href={whatsappLink()} target="_blank" rel="noreferrer">
+        <Botao variante="wa" href={whatsappLink()} target="_blank" rel="noreferrer">
           Confirmar presença no WhatsApp
-        </a>
+        </Botao>
         <p className="rodape__fone">{EVENT.whatsapp.label}</p>
 
         <p className="rodape__assinatura">

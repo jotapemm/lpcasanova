@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { EVENT, whatsappLink } from '@/lib/event'
 import { GIFT_NAME } from '@/lib/gifts'
+import Botao from './Botao'
 
 type Slot = { id: string; nome: string; travado: boolean } | null
 
@@ -111,9 +112,9 @@ export default function CartaoResposta({
                     ? `Você já tem ${meus.length} reservado${meus.length === 1 ? '' : 's'}.`
                     : 'Confirme para os presentes saírem da lista.'}
                 </p>
-                <button type="button" className="botao" onClick={aoConfirmar} disabled={salvando}>
+                <Botao onClick={aoConfirmar} disabled={salvando}>
                   {salvando ? 'Reservando…' : 'Confirmar escolha'}
-                </button>
+                </Botao>
               </>
             ) : (
               <>
@@ -125,14 +126,14 @@ export default function CartaoResposta({
                     ? ` Dá para escolher mais ${sobrando}.`
                     : ' Sua lista está completa.'}
                 </p>
-                <a
-                  className="botao botao--wa"
+                <Botao
+                  variante="wa"
                   href={whatsappLink(meus.map((id) => GIFT_NAME.get(id) ?? id))}
                   target="_blank"
                   rel="noreferrer"
                 >
                   Avisar no WhatsApp
-                </a>
+                </Botao>
               </>
             )}
           </div>

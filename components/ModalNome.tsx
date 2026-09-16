@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useId, useRef, useState } from 'react'
+import Botao from './Botao'
 
 type Props = {
   aberto: boolean
@@ -112,17 +113,12 @@ export default function ModalNome({
         </p>
 
         <div className="modal__acoes">
-          <button
-            type="button"
-            className="botao botao--fantasma"
-            onClick={aoFechar}
-            disabled={salvando}
-          >
+          <Botao variante="fantasma" onClick={aoFechar} disabled={salvando}>
             Voltar
-          </button>
-          <button type="submit" className="botao" disabled={salvando}>
+          </Botao>
+          <Botao type="submit" disabled={salvando}>
             {salvando ? 'Reservando…' : 'Confirmar'}
-          </button>
+          </Botao>
         </div>
       </form>
     </dialog>

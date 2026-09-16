@@ -20,6 +20,7 @@
   --burgundy: #4f0c1c;
   --olive: #445230;
   --olive-claro: #7e8c63;
+  --olive-fundo: #2e3a21; /* onda do botao verde: escurece sem perder contraste */
   --sage: #8ca173;
   --sage-pale: #eef0e4;
 
@@ -27,6 +28,7 @@
   --tinta-fraca: #7a5f57;
   --regua: rgba(68, 82, 48, 0.32);
   --regua-fina: rgba(68, 82, 48, 0.16);
+
 
   /* Cor do detalhe vermelho dentro dos SVGs de folhagem. */
   --folha-acento: var(--wine);
@@ -40,6 +42,7 @@
   --cartao-h: 0px;
 
   --grao: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+
 
   color-scheme: light;
 }
@@ -388,7 +391,17 @@ svg {
 }
 
 .botao {
+  /* Estado da onda. O JS (components/Botao.tsx) sobrescreve --x, --y e --d
+     no proprio elemento; estes sao os valores sem cursor, como no teclado. */
+  --onda: var(--wine);
+  --x: 50%;
+  --y: 50%;
   display: inline-block;
+  position: relative;
+  overflow: hidden;
+  /* Contexto de empilhamento proprio: e o que deixa o z-index -1 da onda
+     acima do fundo do botao e abaixo do texto, sem precisar de <span>. */
+  isolation: isolate;
   font-family: var(--f-sans);
   font-size: 0.72rem;
   font-weight: 400;
@@ -403,12 +416,44 @@ svg {
   background: var(--burgundy);
   color: var(--creme);
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition: border-color 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.botao:hover:not(:disabled) {
-  background: var(--wine);
-  border-color: var(--wine);
+/* A onda: nasce onde o cursor entrou e recua para onde ele saiu. */
+.botao::before {
+  content: '';
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--d, 250%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: var(--onda);
+  /* So transform anima: e composto na GPU, largura e altura nao. */
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* No toque o :hover gruda depois do toque; so quem tem cursor ganha a onda. */
+@media (hover: hover) {
+  .botao:hover:not(:disabled) {
+    border-color: var(--onda);
+  }
+
+  .botao:hover:not(:disabled)::before {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Quem navega pelo teclado recebe a mesma onda, nascendo do centro. */
+.botao:focus-visible {
+  border-color: var(--onda);
+}
+
+.botao:focus-visible::before {
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .botao:disabled {
@@ -416,25 +461,30 @@ svg {
   cursor: default;
 }
 
+/* Fantasma fica sem onda: fundo transparente e texto burgundy fariam a
+   letra sumir quando a onda passasse. E o "Voltar" nao deve brilhar mais
+   que o "Confirmar" do lado. */
 .botao--fantasma {
   background: none;
   color: var(--burgundy);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.botao--fantasma::before {
+  display: none;
 }
 
 .botao--fantasma:hover:not(:disabled) {
   background: rgba(79, 12, 28, 0.08);
   border-color: var(--burgundy);
-  color: var(--burgundy);
 }
 
+/* Verde do WhatsApp. A onda escurece em vez de clarear: o --olive-claro
+   com texto creme da 3,44:1 e reprova; o --olive-fundo da 11,5:1. */
 .botao--wa {
+  --onda: var(--olive-fundo);
   background: var(--olive);
   border-color: var(--olive);
-}
-
-.botao--wa:hover:not(:disabled) {
-  background: var(--olive-claro);
-  border-color: var(--olive-claro);
 }
 
 /* ============================== CONVITE ============================ */
