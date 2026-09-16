@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { devolver, modo } from '@/lib/store'
+import { devolver, FORA_DO_AR, modo } from '@/lib/store'
 import { guestId, itens } from '@/lib/valida'
 
 export const dynamic = 'force-dynamic'
@@ -25,6 +25,11 @@ export async function POST(req: Request) {
   }
 
   const ids = itens(dados.itens)
-  const reservas = await devolver(g, ids)
-  return NextResponse.json({ reservas, modo: modo() }, semCache)
+  try {
+    const reservas = await devolver(g, ids)
+    return NextResponse.json({ reservas, modo: modo() }, semCache)
+  } catch (erro) {
+    console.error('[cha] /api/devolver: nao deu pra falar com o banco', erro)
+    return NextResponse.json({ mensagem: FORA_DO_AR }, { status: 503, ...semCache })
+  }
 }

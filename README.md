@@ -57,15 +57,25 @@ Deploy. Todo `git push` seguinte republica o site.
 
 ---
 
-## 4. Ver quem vai levar o quê
+## 4. Painel dos noivos
 
-Abra o próprio site: cada item reservado mostra o nome completo de quem escolheu.
+Em **`/admin`** (ex.: `lpcasanova.vercel.app/admin`) vocês veem quem vai levar cada
+presente, agrupado por convidado, e podem **liberar** qualquer item.
 
-Para conferir tudo de uma vez, o console da Upstash tem um terminal:
+Liberar serve para quando um convidado pede para trocar o presente mas não consegue
+pelo site — isso acontece se ele reservou num celular e agora está em outro, ou se
+limpou os dados do navegador. O site só deixa devolver quem reservou naquele navegador.
 
-```
-HGETALL cha:jpa:reservas
-```
+### Ligar o painel (uma vez)
+
+1. Na Vercel: projeto → **Settings** → **Environment Variables**
+2. Crie **`ADMIN_SENHA`** com uma senha de **pelo menos 12 caracteres**
+3. Faça **Redeploy**
+
+Sem essa variável (ou com senha curta), o painel fica desligado e avisa o motivo.
+A página não aparece no Google e não tem link no site: só entra quem sabe o endereço
+e a senha. Cada senha errada demora quase um segundo para responder, o que torna
+inviável adivinhar no automático.
 
 ---
 
@@ -87,9 +97,15 @@ npm run dev
 ```
 
 Abre em `http://localhost:3000`. Sem as variáveis do Redis, as reservas ficam só na
-memória e somem quando o servidor reinicia — o suficiente para testar o visual. Para
-testar de verdade, copie `.env.example` para `.env.local` e preencha as chaves da
-Upstash.
+memória e somem quando o servidor reinicia — o suficiente para testar o visual.
+
+Para testar com o banco de verdade, crie um `.env` com as chaves da Upstash (veja o
+`.env.example`) e **inclua `RESERVAS_KEY=cha:jpa:dev`**. Sem essa linha, o localhost
+lê e grava a **mesma lista do site no ar**: um presente clicado no teste aparece
+reservado para os convidados. Com ela, os testes vão para uma lista separada no
+mesmo banco.
+
+Para testar o painel localmente, coloque também uma `ADMIN_SENHA` no `.env`.
 
 ---
 

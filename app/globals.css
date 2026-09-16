@@ -715,6 +715,19 @@ svg {
   color: var(--burgundy);
 }
 
+/* Quando o banco nao respondeu: substitui a contagem e a lista some.
+   Mostrar os 49 como "disponiveis" seria mentira. */
+.presentes__indisponivel {
+  font-family: var(--f-serif);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--wine);
+  padding: 0.7rem 1.1rem;
+  border: 1px solid rgba(161, 30, 53, 0.3);
+  border-radius: 2px;
+  background: var(--papel-alto);
+}
+
 .alerta {
   position: relative;
   z-index: 2;
@@ -1281,6 +1294,175 @@ svg {
   text-transform: uppercase;
   text-indent: 0.24em;
   color: var(--olive);
+}
+
+/* ============================== PAINEL ============================= */
+
+/* /admin: pagina de uso, nao de convite. Reaproveita titulo, campo e botao
+   da pagina e fica no papel liso, sem cortina nem petalas. */
+.painel {
+  width: var(--coluna);
+  max-width: 720px;
+  margin-inline: auto;
+  padding-block: clamp(3rem, 9vw, 6rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+.painel__cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.painel__texto {
+  font-family: var(--f-serif);
+  font-size: 1.08rem;
+  line-height: 1.6;
+  color: var(--tinta-fraca);
+}
+
+.painel__entrada {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;
+  max-width: 340px;
+}
+
+.painel__entrada .campo {
+  width: 100%;
+}
+
+.painel__resumo {
+  font-family: var(--f-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--olive);
+}
+
+.painel__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  padding-top: 0.4rem;
+}
+
+.painel__erro,
+.painel__aviso {
+  min-height: 1.1rem;
+  font-family: var(--f-sans);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.painel__erro {
+  color: var(--wine);
+}
+
+.painel__aviso {
+  color: var(--olive);
+}
+
+.painel__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.painel__voltar {
+  align-self: flex-start;
+}
+
+.convidado {
+  display: flex;
+  flex-direction: column;
+}
+
+.convidado__nome {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(1.3rem, 4vw, 1.6rem);
+  letter-spacing: 0.04em;
+  color: var(--burgundy);
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--regua);
+}
+
+.reserva {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.3rem 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--regua-fina);
+}
+
+.reserva__item {
+  font-family: var(--f-serif);
+  font-size: 1.05rem;
+}
+
+.reserva__quando {
+  font-family: var(--f-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--tinta-fraca);
+  white-space: nowrap;
+}
+
+.reserva__liberar {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--regua);
+  border-radius: 2px;
+  background: none;
+  font-family: var(--f-sans);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--olive);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.reserva__liberar:hover:not(:disabled) {
+  background: var(--olive);
+  border-color: var(--olive);
+  color: var(--creme);
+}
+
+/* Segundo clique: vermelho de "tem certeza?". Precisa vencer o hover acima,
+   por isso repete o seletor com :hover. */
+.reserva__liberar.e-confirmando,
+.reserva__liberar.e-confirmando:hover:not(:disabled) {
+  background: var(--wine);
+  border-color: var(--wine);
+  color: var(--creme);
+}
+
+.reserva__liberar:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+@media (max-width: 520px) {
+  .reserva {
+    grid-template-columns: 1fr auto;
+  }
+
+  .reserva__quando {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .reserva__liberar {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
 }
 
 /* ============================= MOVIMENTO ========================== */

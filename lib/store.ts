@@ -13,6 +13,9 @@ export type Reserva = { g: string; n: string; t: number }
 
 const KEY = process.env.RESERVAS_KEY || 'cha:jpa:reservas'
 
+/** O que o convidado le quando o banco nao responde. */
+export const FORA_DO_AR = 'A lista está fora do ar agora. Tente de novo em instantes.'
+
 /* -------------------------------------------------------------- */
 
 let cliente: Redis | null | undefined
@@ -190,4 +193,26 @@ export async function devolver(guestId: string, itens: string[]): Promise<Reserv
   else meus.forEach((id) => memoria.delete(id))
 
   return listar(guestId)
+}
+
+/* ------------------------------ painel ------------------------------ */
+
+export type ReservaDoPainel = { id: string; nome: string; quando: number }
+
+/** Tudo que o painel dos noivos precisa: quem levou o que e quando. Sem o id do navegador. */
+export async function listarNoPainel(): Promise<ReservaDoPainel[]> {
+  const mapa = await lerTudo()
+  return [...mapa].map(([id, r]) => ({ id, nome: r.n, quando: r.t }))
+}
+
+/**
+ * Solta presentes sem conferir quem reservou. So o painel chama, e o painel
+ * so responde com a senha certa — e a saida pro convidado que trocou de
+ * celular ou limpou o navegador e perdeu o vinculo com a propria reserva.
+ */
+export async function liberarNoPainel(itens: string[]): Promise<void> {
+  if (!itens.length) return
+  const r = redis()
+  if (r) await r.hdel(KEY, ...itens)
+  else itens.forEach((id) => memoria.delete(id))
 }

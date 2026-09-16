@@ -7,7 +7,7 @@ import type { Modo, Reservas } from '@/lib/tipos'
 import CartaoResposta from './CartaoResposta'
 import ModalNome from './ModalNome'
 
-type Props = { reservasIniciais: Reservas; modoInicial: Modo }
+type Props = { reservasIniciais: Reservas; modoInicial: Modo; listaCarregou: boolean }
 
 const CHAVE_ID = 'cha.convidado'
 const CHAVE_NOME = 'cha.nome'
@@ -38,8 +38,11 @@ function busca(chave: string) {
   }
 }
 
-export default function Presentes({ reservasIniciais, modoInicial }: Props) {
+export default function Presentes({ reservasIniciais, modoInicial, listaCarregou }: Props) {
   const [reservas, setReservas] = useState<Reservas>(reservasIniciais)
+  /* Falso quando o servidor abriu a pagina sem conseguir ler o banco. Enquanto
+     for falso a lista nao aparece: mostrar tudo "disponivel" seria mentira. */
+  const [carregou, setCarregou] = useState(listaCarregou)
   const [modo, setModo] = useState<Modo>(modoInicial)
   const [escolhas, setEscolhas] = useState<string[]>([])
   const [convidado, setConvidado] = useState('')
@@ -76,7 +79,10 @@ export default function Presentes({ reservasIniciais, modoInicial }: Props) {
       const res = await fetch(`/api/itens?g=${encodeURIComponent(id)}`, { cache: 'no-store' })
       if (!res.ok) return
       const dados = await res.json()
-      if (dados?.reservas) setReservas(dados.reservas)
+      if (dados?.reservas) {
+        setReservas(dados.reservas)
+        setCarregou(true)
+      }
       if (dados?.modo) setModo(dados.modo)
     } catch {
       /* offline: mantem o que ja esta na tela */
@@ -206,12 +212,19 @@ export default function Presentes({ reservasIniciais, modoInicial }: Props) {
             Escolha até {EVENT.maxPicks} presentes. Quando você confirma, eles saem da lista —
             assim ninguém leva o mesmo item duas vezes.
           </p>
-          <p className="presentes__contagem" role="status">
-            <strong>{disponiveis}</strong> de {TOTAL_GIFTS} ainda disponíveis
-          </p>
+          {carregou ? (
+            <p className="presentes__contagem" role="status">
+              <strong>{disponiveis}</strong> de {TOTAL_GIFTS} ainda disponíveis
+            </p>
+          ) : (
+            <p className="presentes__indisponivel" role="alert">
+              A lista não carregou agora. Recarregue a página em alguns instantes.
+            </p>
+          )}
         </div>
 
-        {CATEGORIES.map((cat) => (
+        {carregou &&
+          CATEGORIES.map((cat) => (
           <div className="grupo" key={cat.id}>
             <h3 className="grupo__titulo">{cat.name}</h3>
             <ul className="grade">

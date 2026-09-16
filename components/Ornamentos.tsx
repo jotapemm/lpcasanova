@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react'
+
 /* Ornamento em SVG. O verde vem de `currentColor` (quem usa define com `color`);
    o vermelho vem de `--folha-acento`. */
 
@@ -63,13 +65,13 @@ const FOLHAS_DO_RAMO: FolhaDoRamo[] = [
 const caminho = (c: Curva) =>
   `M${c[0].join(' ')} C${c[1].join(' ')}, ${c[2].join(' ')}, ${c[3].join(' ')}`
 
-function RamoDeOliveira() {
+function ramoDeOliveira(cor: string) {
   return (
-    <>
+    <g>
       <path
         d={caminho(TALO)}
         fill="none"
-        stroke="currentColor"
+        stroke={cor}
         strokeWidth="1.3"
         strokeLinecap="round"
         vectorEffect="non-scaling-stroke"
@@ -78,23 +80,23 @@ function RamoDeOliveira() {
         <g key={i} transform={`translate(${f.x} ${f.y}) rotate(${f.giro}) scale(${f.escala})`}>
           <path
             d={FOLHA_OLIVEIRA}
-            fill="currentColor"
+            fill={cor}
             fillOpacity="0.22"
-            stroke="currentColor"
+            stroke={cor}
             strokeWidth="1.05"
             strokeLinejoin="round"
             vectorEffect="non-scaling-stroke"
           />
           <path
             d="M1.5 0H13"
-            stroke="currentColor"
+            stroke={cor}
             strokeWidth="0.6"
             opacity="0.5"
             vectorEffect="non-scaling-stroke"
           />
         </g>
       ))}
-    </>
+    </g>
   )
 }
 
@@ -105,22 +107,39 @@ const BAGAS_DO_NO: Array<[number, number, number]> = [
   [157, 73.5, 2.2],
 ]
 
-/** Dois ramos de oliveira cruzados — marca a passagem de uma parte do convite para a outra. */
-export function Divisor({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 10 300 86" className={className} aria-hidden="true" focusable="false">
-      <RamoDeOliveira />
-      <g transform="translate(300 0) scale(-1 1)">
-        <RamoDeOliveira />
-      </g>
+type PropsDoDivisor = {
+  className?: string
+  style?: CSSProperties
+  /** Traço e folhas. Na página vem do CSS (currentColor). */
+  cor?: string
+  /** Bagas do nó. Na página vem de --folha-acento. */
+  acento?: string
+}
 
-      <g fill="none" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" opacity="0.6">
+/**
+ * Dois ramos de oliveira cruzados — marca a passagem de uma parte do convite
+ * para a outra. `cor` e `acento` só mudam fora da página, na imagem de prévia
+ * do WhatsApp, que é gerada sem CSS.
+ */
+export function Divisor({ className, style, cor = 'currentColor', acento = ACENTO }: PropsDoDivisor) {
+  return (
+    <svg
+      viewBox="0 10 300 86"
+      className={className}
+      style={style}
+      aria-hidden="true"
+      focusable="false"
+    >
+      {ramoDeOliveira(cor)}
+      <g transform="translate(300 0) scale(-1 1)">{ramoDeOliveira(cor)}</g>
+
+      <g fill="none" stroke={cor} strokeWidth="0.8" strokeLinecap="round" opacity="0.6">
         {BAGAS_DO_NO.map(([x, y], i) => (
           <path key={i} d={`M150 81 Q${x} ${y + 7} ${x} ${y}`} vectorEffect="non-scaling-stroke" />
         ))}
       </g>
       {BAGAS_DO_NO.map(([x, y, r], i) => (
-        <circle key={i} cx={x} cy={y} r={r} fill={ACENTO} opacity="0.85" />
+        <circle key={i} cx={x} cy={y} r={r} fill={acento} opacity="0.85" />
       ))}
     </svg>
   )

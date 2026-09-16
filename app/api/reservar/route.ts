@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { EVENT } from '@/lib/event'
 import { GIFT_NAME } from '@/lib/gifts'
-import { listar, modo, reservar } from '@/lib/store'
+import { FORA_DO_AR, listar, modo, reservar } from '@/lib/store'
 import { guestId, itens, nomeCompleto } from '@/lib/valida'
 
 export const dynamic = 'force-dynamic'
@@ -38,14 +38,22 @@ export async function POST(req: Request) {
   }
 
   const ids = itens(dados.itens)
-  if (!ids.length) {
-    return NextResponse.json(
-      { mensagem: 'Escolha pelo menos um presente.', reservas: await listar(g), modo: modo() },
-      { status: 400, ...semCache },
-    )
+  try {
+    if (!ids.length) {
+      return NextResponse.json(
+        { mensagem: 'Escolha pelo menos um presente.', reservas: await listar(g), modo: modo() },
+        { status: 400, ...semCache },
+      )
+    }
+    return await responder(g, nome.completo, ids)
+  } catch (erro) {
+    console.error('[cha] /api/reservar: nao deu pra falar com o banco', erro)
+    return NextResponse.json({ mensagem: FORA_DO_AR }, { status: 503, ...semCache })
   }
+}
 
-  const r = await reservar(g, nome.completo, ids)
+async function responder(g: string, quem: string, ids: string[]) {
+  const r = await reservar(g, quem, ids)
 
   if (!r.ok) {
     const mensagem =

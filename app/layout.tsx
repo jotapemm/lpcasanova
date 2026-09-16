@@ -34,7 +34,15 @@ const sans = Jost({
 const titulo = `Chá de casa nova · ${COUPLE_LINE}`
 const descricao = `${EVENT.date.weekday}, ${EVENT.date.day} de ${EVENT.date.month} de ${EVENT.date.year}, às ${EVENT.date.time}. Escolha um presente na lista e confirme sua presença.`
 
+/* O WhatsApp so mostra a imagem de previa se o endereco dela for absoluto.
+   Na Vercel, VERCEL_PROJECT_PRODUCTION_URL vem preenchida sozinha com o
+   dominio do site no ar; na maquina, cai no localhost. */
+const enderecoBase = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : `http://localhost:${process.env.PORT ?? 3000}`
+
 export const metadata: Metadata = {
+  metadataBase: new URL(enderecoBase),
   title: titulo,
   description: descricao,
   openGraph: { title: titulo, description: descricao, type: 'website', locale: 'pt_BR' },
