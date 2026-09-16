@@ -64,7 +64,6 @@ html {
 }
 
 body {
-  position: relative;
   margin: 0;
   background-image: linear-gradient(180deg,
       var(--papel-topo) 0%,
@@ -115,6 +114,49 @@ svg {
   color: var(--blush-claro);
 }
 
+/* ========================= BARRA DE ROLAGEM ======================== */
+
+/* So o polegar, verde da pagina; trilho e setas somem.
+   Chromium e Safari entendem os pseudo-elementos -webkit-; o Firefox so
+   entende as propriedades padrao. Nao da pra mandar as duas pro Chrome:
+   desde a versao 121, se scrollbar-color existir, ele ignora os -webkit-
+   e perde o arredondado. Por isso o @supports separa quem recebe o que. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Borda transparente + background-clip afinam o polegar sem mexer na
+   largura da barra: 10px de area, 4px de pilula visivel. */
+::-webkit-scrollbar-thumb {
+  background-color: rgba(126, 140, 99, 0.55);
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--olive);
+  border-width: 2px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(126, 140, 99, 0.55) transparent;
+  }
+}
+
 .sr {
   position: absolute;
   width: 1px;
@@ -128,11 +170,14 @@ svg {
 
 /* ----------------------------- textura ---------------------------- */
 
-/* Um grao so, na folha inteira. Antes ele morava em cada secao, e o vao
-   entre elas — justo onde fica o divisor — ficava sem textura: uma faixa
-   uns 3% mais clara que dava pra perceber. Mesmo z-index de antes: pinta
-   por cima das plantas e petalas, por baixo dos textos (z-index 1). */
-body::after {
+/* Um grao por tela: convite, palco e rodape agora sao camadas separadas,
+   cada uma com o proprio empilhamento — um grao unico no body pintaria por
+   cima dos textos do convite. Aqui ele fica por cima das plantas e petalas
+   e por baixo dos textos (z-index 1) de cada tela. As tres telas encostam
+   uma na outra, entao nao sobra vao sem textura. */
+.convite::after,
+.palco::after,
+.rodape::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -325,6 +370,38 @@ body::after {
   rotate: 166deg;
 }
 
+/* ============================ CORTINA ============================== */
+
+/* Contem o convite e o palco. E ela quem limita o sticky do convite:
+   quando a cena acaba, o convite vai embora junto e libera o rodape.
+   O z-index 1 poe a cena inteira na frente do rodape. */
+.cena {
+  position: relative;
+  z-index: 1;
+}
+
+/* A folha que rola por cima. Fundo opaco pra cobrir o convite; a sombra
+   so se nota quando ela passa por cima de alguma coisa. */
+.palco {
+  position: relative;
+  z-index: 1;
+  /* flow-root segura as margens dos divisores do lado de dentro. Com block,
+     elas vazavam pela borda do palco e abriam uma fresta de ~20px, por onde
+     o rodape (preso atras de tudo) aparecia durante a rolagem. */
+  display: flow-root;
+  /* Respiro entre a borda da cortina e os ramos. So nas pontas do palco:
+     o espaco do ramo ate o versiculo e ate a lista continua o mesmo. */
+  padding-block: clamp(2rem, 5vw, 4.5rem);
+  border: 1px solid var(--regua);
+  background-image: linear-gradient(180deg,
+      var(--papel-topo) 0%,
+      var(--papel-meio) 40%,
+      var(--papel-base) 100%);
+  /*box-shadow:
+    0 -22px 44px -26px rgba(43, 17, 24, 0.22),
+    0 22px 44px -26px rgba(43, 17, 24, 0.22);*/
+}
+
 /* --------------------------- divisor ------------------------------ */
 
 .divisor {
@@ -496,13 +573,29 @@ body::after {
 /* ============================== CONVITE ============================ */
 
 .convite {
-  position: relative;
+  /* Tela de tras, do tamanho exato da janela e com o conteudo no meio: se
+     couber, congela no primeiro pixel e o palco ja sobe, sem rolagem morta.
+     Se nao couber (celular), cresce, rola ate a base encostar no fim da
+     janela e so entao congela - senao o fim do convite nunca seria visto.
+     A segunda linha de top usa svh, que nao pula quando a barra do
+     navegador do celular some; quem nao conhece svh fica com a primeira. */
+  position: sticky;
+  top: min(0px, calc(100vh - var(--convite-h, 100vh)));
+  top: min(0px, calc(100svh - var(--convite-h, 100svh)));
+  z-index: 0;
   overflow: hidden;
+  background-color: var(--papel-topo);
   background-image: radial-gradient(120% 78% at 50% 0%,
       rgba(140, 161, 115, 0.14) 0%,
       rgba(140, 161, 115, 0) 62%);
   color: var(--tinta);
-  padding: clamp(5rem, 14vw, 8.5rem) 0 clamp(4.5rem, 13vw, 7.5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(2.5rem, 7vh, 5rem) 0;
+  padding: clamp(2.5rem, 7svh, 5rem) 0;
 }
 
 .convite__corpo {
@@ -606,30 +699,6 @@ body::after {
   margin-top: 0.9rem;
 }
 
-.descer {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: clamp(1rem, 4vw, 2rem);
-  font-family: var(--f-sans);
-  font-size: 0.64rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  text-indent: 0.3em;
-  text-decoration: none;
-  color: var(--olive);
-  transition: color 0.2s ease;
-}
-
-.descer:hover {
-  color: var(--wine);
-}
-
-.descer svg {
-  width: 13px;
-  height: 25px;
-}
 
 /* ============================ PÉTALAS ============================== */
 
@@ -694,16 +763,47 @@ body::after {
 
 .versiculo {
   position: relative;
-  overflow: hidden;
-  /* Mancha de luz, nao faixa: desbota nas duas pontas e nao deixa emenda. */
-  background-image: linear-gradient(180deg,
-      rgba(241, 200, 198, 0) 0%,
-      rgba(241, 200, 198, 0.74) 20%,
-      rgba(241, 200, 198, 0.74) 80%,
-      rgba(241, 200, 198, 0) 100%);
+  /* So recorta na horizontal (os ramos saem pelas laterais); na vertical
+     o rosa precisa transbordar. Com hidden nao daria: hidden forca o outro
+     eixo a recortar tambem. clip nao forca. */
+  overflow-x: clip;
+  /* Quanto o rosa passa pra fora da secao, e quanto dura o desbotado. */
+  --transbordo: clamp(32px, 5vw, 72px);
+  --esmaecer: clamp(100px, 13vw, 170px);
   color: var(--burgundy);
   --folha-acento: var(--burgundy);
-  padding: clamp(3.2rem, 9vw, 5.5rem) 0;
+  padding: clamp(9rem, 9vw, 5.5rem) 0;
+}
+
+/* O rosa mora num pseudo-elemento maior que a secao: o padding dos textos
+   nao muda, so a luz cresce. As paradas seguem uma curva suave (smoothstep)
+   em vez de reta — degrade de duas paradas deixa uma quina visivel onde
+   comeca e onde termina. */
+.versiculo::before {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * var(--transbordo)) 0;
+  background-image: linear-gradient(180deg,
+      rgba(241, 200, 198, 0) 0,
+      rgba(241, 200, 198, 0.032) calc(var(--esmaecer) * 0.125),
+      rgba(241, 200, 198, 0.116) calc(var(--esmaecer) * 0.25),
+      rgba(241, 200, 198, 0.234) calc(var(--esmaecer) * 0.375),
+      rgba(241, 200, 198, 0.37) calc(var(--esmaecer) * 0.5),
+      rgba(241, 200, 198, 0.506) calc(var(--esmaecer) * 0.625),
+      rgba(241, 200, 198, 0.624) calc(var(--esmaecer) * 0.75),
+      rgba(241, 200, 198, 0.708) calc(var(--esmaecer) * 0.875),
+      rgba(241, 200, 198, 0.74) var(--esmaecer),
+      rgba(241, 200, 198, 0.74) calc(100% - var(--esmaecer)),
+      rgba(241, 200, 198, 0.708) calc(100% - var(--esmaecer) * 0.875),
+      rgba(241, 200, 198, 0.624) calc(100% - var(--esmaecer) * 0.75),
+      rgba(241, 200, 198, 0.506) calc(100% - var(--esmaecer) * 0.625),
+      rgba(241, 200, 198, 0.37) calc(100% - var(--esmaecer) * 0.5),
+      rgba(241, 200, 198, 0.234) calc(100% - var(--esmaecer) * 0.375),
+      rgba(241, 200, 198, 0.116) calc(100% - var(--esmaecer) * 0.25),
+      rgba(241, 200, 198, 0.032) calc(100% - var(--esmaecer) * 0.125),
+      rgba(241, 200, 198, 0) 100%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .versiculo__corpo {
@@ -716,7 +816,7 @@ body::after {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.9rem;
+  gap: 0.8rem;
 }
 
 .versiculo__convite {
@@ -1313,8 +1413,16 @@ body::after {
 /* ============================== RODAPE ============================ */
 
 .rodape {
-  position: relative;
+  /* Preso no fundo da janela o tempo todo, escondido atras da cena.
+     Quando o palco termina, a borda dele sobe e revela o rodape parado.
+     Se o rodape for mais alto que a janela, o bottom negativo deixa ver
+     o topo dele antes de soltar. */
+  position: sticky;
+  bottom: min(0px, calc(100vh - var(--rodape-h, 0px)));
+  bottom: min(0px, calc(100svh - var(--rodape-h, 0px)));
+  z-index: 0;
   overflow: hidden;
+  background-color: var(--papel-base);
   background-image: linear-gradient(180deg,
       rgba(140, 161, 115, 0) 0%,
       rgba(140, 161, 115, 0.2) 72%,
@@ -1459,9 +1567,6 @@ body::after {
   animation-delay: 0.85s;
 }
 
-.d6 {
-  animation-delay: 1.05s;
-}
 
 /* ============================== TELAS ============================= */
 

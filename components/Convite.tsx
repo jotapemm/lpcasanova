@@ -52,20 +52,6 @@ export default function Convite() {
             Abrir no mapa
           </a>
         </div>
-
-        <a className="descer reveal d6" href="#presentes">
-          <span>Escolher um presente</span>
-          <svg viewBox="0 0 14 26" aria-hidden="true" focusable="false">
-            <path
-              d="M7 0 V 22 M1.5 16.5 L7 23 L12.5 16.5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </a>
       </div>
     </header>
   )

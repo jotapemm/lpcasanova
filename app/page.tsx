@@ -1,3 +1,4 @@
+import Camadas from '@/components/Camadas'
 import Convite from '@/components/Convite'
 import { Divisor } from '@/components/Ornamentos'
 import Presentes from '@/components/Presentes'
@@ -14,12 +15,22 @@ export default async function Pagina() {
 
   return (
     <>
-      <Convite />
-      <Divisor className="divisor" />
-      <Versiculo />
-      <Presentes reservasIniciais={reservas} modoInicial={modo()} />
-      <Divisor className="divisor" />
+      {/* Efeito cortina: o convite fica preso atras e o palco sobe por cima dele.
+          Os dois moram na mesma .cena de proposito — assim o convite so fica
+          preso enquanto a cena passa, e larga a tela antes do rodape. */}
+      <div className="cena">
+        <Convite />
+        <main className="palco">
+          <Divisor className="divisor" />
+          <Versiculo />
+          <Presentes reservasIniciais={reservas} modoInicial={modo()} />
+          <Divisor className="divisor" />
+        </main>
+      </div>
+
+      {/* Preso no fundo da janela, atras da cena: aparece quando o palco termina. */}
       <Rodape />
+      <Camadas />
     </>
   )
 }
