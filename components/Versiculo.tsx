@@ -1,12 +1,6 @@
-import { Bagas, Ramo } from './Ornamentos'
-
 export default function Versiculo() {
   return (
     <section className="versiculo" aria-labelledby="versiculo-titulo">
-      <Ramo className="planta planta--versiculo-esq" />
-      <Ramo className="planta planta--versiculo-dir" />
-      <Bagas className="planta planta--versiculo-baga" />
-
       <div className="versiculo__corpo">
         <p className="versiculo__convite">
           Uma nova fase se inicia em nossas vidas, e convidamos você para comemorar conosco!

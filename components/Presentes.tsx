@@ -5,7 +5,6 @@ import { EVENT } from '@/lib/event'
 import { CATEGORIES, GIFT_NAME, TOTAL_GIFTS } from '@/lib/gifts'
 import type { Modo, Reservas } from '@/lib/tipos'
 import CartaoResposta from './CartaoResposta'
-import { Bagas, Samambaia } from './Ornamentos'
 import ModalNome from './ModalNome'
 
 type Props = { reservasIniciais: Reservas; modoInicial: Modo }
@@ -199,10 +198,6 @@ export default function Presentes({ reservasIniciais, modoInicial }: Props) {
           (veja o README) antes de mandar o link para os convidados.
         </p>
       )}
-
-      <Samambaia className="planta planta--lista-esq" />
-      <Samambaia className="planta planta--lista-dir" />
-      <Bagas className="planta planta--lista-baga" />
 
       <div className="presentes__corpo">
         <div className="presentes__cabecalho">

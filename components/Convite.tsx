@@ -1,5 +1,4 @@
 import { EVENT, mapaLink } from '@/lib/event'
-import { Bagas, Ramo, Samambaia } from './Ornamentos'
 import Petalas from './Petalas'
 
 export default function Convite() {
@@ -7,21 +6,6 @@ export default function Convite() {
 
   return (
     <header className="convite">
-      {/* moldura de folhagem: densa em cima e embaixo, como no convite impresso */}
-      <div className="folhagem folhagem--topo" aria-hidden="true">
-        <Ramo className="planta planta--a" />
-        <Samambaia className="planta planta--b" />
-        <Bagas className="planta planta--c" />
-        <Ramo className="planta planta--d" />
-        <Samambaia className="planta planta--e" />
-      </div>
-
-      <div className="folhagem folhagem--base" aria-hidden="true">
-        <Samambaia className="planta planta--f" />
-        <Bagas className="planta planta--g" />
-        <Ramo className="planta planta--h" />
-      </div>
-
       <Petalas />
 
       <div className="convite__corpo">

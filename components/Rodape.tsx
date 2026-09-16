@@ -1,19 +1,10 @@
 import { COUPLE_LINE, EVENT, whatsappLink } from '@/lib/event'
 import Botao from './Botao'
-import { Bagas, Ramo, Samambaia } from './Ornamentos'
 import Petalas from './Petalas'
 
 export default function Rodape() {
   return (
     <footer className="rodape">
-      <div className="folhagem folhagem--rodape" aria-hidden="true">
-        <Ramo className="planta planta--r1" />
-        <Samambaia className="planta planta--r2" />
-        <Bagas className="planta planta--r3" />
-        <Samambaia className="planta planta--r4" />
-        <Ramo className="planta planta--r5" />
-      </div>
-
       <Petalas />
 
       <div className="rodape__corpo">
